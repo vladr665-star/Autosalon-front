@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосалон "Автографф"</title>
+    <link rel="stylesheet" href="/static/css/style.css"> 
+</head>
+<body>
+    <div class="login-container">
+        <h1>Автографф</h1>
+        <p> Диллерский центр</p>
+        <p2>Введите вашу почту</p2>
+          <form method="POST">
+            <label>Ваш email</label>
+            <input type="email" name="email" required>
+            <label>Ваш пароль</label>
+            <input type="password" name="password" required>
+            <button>Показать мою машину</button>
+            </div>
+</body>
+</html>
