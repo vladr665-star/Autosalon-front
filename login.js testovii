@@ -1,0 +1,77 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMessage');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();           // не перезагружать страницу
+
+        // Сброс ошибки
+        errorMsg.style.display = 'none';
+        errorMsg.textContent = '';
+
+        // Блокировка кнопки на время запроса
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Вход...';
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        // Простая клиентская валидация
+        if (!email || !password) {
+            showError('Заполните все поля');
+            resetButton();
+            return;
+        }
+
+        if (!email.includes('@')) {
+            showError('Введите корректный email');
+            resetButton();
+            return;
+        }
+
+        try {
+            // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+            // Здесь замени URL на реальный адрес твоего backend
+            const response = await fetch('http://localhost:5000/api/login', {   // или твой порт/эндпоинт
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.token) {
+                // Сохраняем JWT-токен (требование проекта)
+                localStorage.setItem('jwt_token', data.token);
+
+                // Можно сохранить данные пользователя, если приходят
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                }
+
+                alert('Вход выполнен успешно!');
+                window.location.href = 'dashboard.html';   // или index.html / главную страницу
+            } else {
+                showError(data.message || 'Неверный email или пароль');
+            }
+        } catch (err) {
+            console.error(err);
+            showError('Ошибка соединения с сервером. Проверьте, запущен ли backend.');
+        } finally {
+            resetButton();
+        }
+    });
+
+    function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = 'block';
+    }
+
+    function resetButton() {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Войти';
+    }
+});
