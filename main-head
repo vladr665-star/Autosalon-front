@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автографф - Официальный дилер</title>
+    <link rel="stylesheet" href="glavnaya_style.css"> 
+</head>
+<body>
+    <!-- Контакты -->
+    <div class="top-line">
+        <span> Ваш город: Москва</span>
+        <span> с 9:00 до 20:00</span>
+        <span> Москва, ул. Краснообатырская, д. 89 стр 12</span>
+        <span> +7 (495) 1412197</span>
+        <a href="#" class="callback">Заказать звонок</a>
+    </div>
+    
+   <!--Навигационная шапка-->
+    <div class="main-header">
+        <div class="logo">
+            <h1>Автографф</h1>
+            <p>официальный дилер</p>
+        </div>
+        <div class="nav-links">
+            <a href="asorti-cars.html">Новые авто </a>
+            <a href="">Поиск по автомобилям</a>
+            <a href="">Авто с пробегом</a>
+            <a href="">Автокредит </a>
+            <a href="">Контакты</a>
+            <a href="login.html"> Войти </a>
+            <a href=""> Ремонт </a>
+
+        </div>
+    </div>
+</body>
+</html>
