@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Автосалон "Автографф"</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="register-container">
+        <form id="regForm" onsubmit="event.preventDefault(); userRegister();">
+            <h2>Регистрация</h2>
+            <p>Создайте аккаунт</p>
+            
+            <label>Имя пользователя</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label>Email</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label>Пароль</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+        <a href="login.html">Уже есть аккаунт? Войти</a>
+        <p><a href="main-head.html">На главную</a></p>
+    </div>
+
+    <script>
+// ========== ЕСЛИ УЖЕ ЗАЛОГИНЕН ==========
+const token = localStorage.getItem('token');
+if (token) {
+    window.location.href = 'dashboard.html';
+}
+
+// ========== КОНФИГ ==========
+const API_URL = 'http://localhost:8080/api/v1/auth';
+
+async function userRegister() {
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    
+    // Валидация
+    if (!username || !email || !password) {
+        alert("Пожалуйста, заполните все поля!!!");
+        return;
+    }
+    
+    if (username.length < 3) {
+        alert("Имя пользователя должно содержать минимум 3 символа");
+        return;
+    }
+    
+    if (!email.includes("@") || !email.includes(".")) {
+        alert("Введите корректный email адрес");
+        return;
+    }
+    
+    if (password.length < 6) {
+        alert("Пароль должен быть минимум 6 символов");
+        return;
+    }
+    
+    const submitBtn = document.querySelector("button");
+    const oldText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Регистрация...";
+    
+    try {
+        const response = await fetch(`${API_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: username, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            if (response.status == 409) throw new Error("Пользователь с таким email уже существует!");
+            if (response.status == 400) throw new Error("Некорректные данные");
+            throw new Error(data.message || "Ошибка " + response.status);
+        }
+        
+        if (data.data && data.data.token) {
+            localStorage.setItem("token", data.data.token);
+            localStorage.setItem("user", JSON.stringify({ username, email }));
+            alert("Регистрация успешна! Добро пожаловать!");
+            window.location.href = "dashboard.html";
+        } else {
+            throw new Error("Сервер не вернул токен");
+        }
+        
+    } catch (err) {
+        console.error("Ошибка:", err);
+        
+        // ========== РЕЗЕРВНЫЙ ОТВЕТ (ДЕМО-РЕЖИМ) ==========
+        alert(`⚠️ Сервер недоступен. Регистрация не выполнена.\n\nДемо-аккаунт для входа: demo@autograf.ru / demo123`);
+        
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = oldText;
+    }
+}
+    </script>
+</body>
+</html>
